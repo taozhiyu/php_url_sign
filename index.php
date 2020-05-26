@@ -8,7 +8,7 @@ $user_exp = $_GET['e'];
 //过期时间，时间戳，十位数字，永久为十个9
 $user_sign = $_GET['s'];
 //签名，小写字母+数字，30位
-$My_key = 'taozhiyu';
+$My_key = '这里是个人混淆参数（可以这样理解吧，需要把获取签名和订阅的两个地方的设置成相同参数）';
 $LinkAll = 0;
 $isError=false;
 if (!preg_match("/^[1-9]\\d{4,14}$/",$user_id)||
@@ -27,17 +27,17 @@ $links=getlinks($user_number);
 if($isError){
     $retCode=retMsg($links);
 } else{
-    $retCode=implode($links, "n");
+    $retCode=implode($links, "\n");
 }
-echo base64_encode(retMsg(array("您的ID：" . $user_id, preg_match("/9{10}/", $user_exp) ? "您是尊贵的永久VIP" : "您的VIP到期时间" . date("Y-m-d H:i", $user_exp),  $user_number=="999999"?"读取节点个数:全部":"读取节点个数：" .$user_number . "/" . $LinkAll, "刷新即可随机获取节点", "每人的账号唯一，泛滥会导致ban", "如果节点失效，请尝试更换节点")) . PHP_EOL . $retCode);
+echo base64_encode(retMsg(array("您的ID：" . $user_id, preg_match("/9{10}/", $user_exp) ? "您是尊贵的永久VIP" : "您的VIP到期时间" . date("Y-m-d H:i", $user_exp),  $user_number=="999999"?"读取节点个数:全部":"读取节点个数：" .$user_number . "/" . $LinkAll, "刷新即可随机获取节点",  "如果节点失效，请尝试更换节点")) . PHP_EOL . $retCode);
 function getSign($user_id, $user_number, $user_exp, $My_key) {
-    return substr(md5(substr(md5(md5($user_id . $user_number). $user_exp), 0, 5)  . $My_key), 0, 30);
+    return substr(md5(substr(md5(md5($user_id . $user_number) . $user_exp), 0, 5) . $My_key), 0, 30);
 }
 function retMsg($code) {
     $modle = "";
     $arrlength = count($code);
     for ($x = 0;$x < $arrlength;$x++) {
-        $modle.= 'vmess://' . base64_encode('{"add":"公告----此线路无法连接","aid":"1","host":"ssr.xm0.top","id":"' . getUuid() . '","net":"ws","path":"","port":"0","ps":"' . $code[$x] . '","tls":"none","type":"","v":"2"}') . PHP_EOL;
+        $modle.= 'vmess://' . base64_encode('{"add":"公告——此线路无法连接","aid":"1","host":"ssr.xm0.top","id":"' . getUuid() . '","net":"ws","path":"","port":"0","ps":"' . $code[$x] . '","tls":"none","type":"","v":"2"}') . PHP_EOL;
     }
     return $modle;
 }
@@ -68,13 +68,13 @@ function getlinks($user_number) {
         $res = fread($fp, $file_size);
         fclose($fp);
         //将读取的内容数据的处理
-        $res_new = str_replace("rn", "n", $res);
-        $arr = explode("n", $res_new);
+        $res_new = str_replace("\r\n", "\n", $res);
+        $arr = explode("\n", $res_new);
         $GLOBALS['LinkAll'] = count($arr);
-        if ($user_number == "999999") {
+        if ($user_number == "666666") {
             return $arr;
         }elseif (count($arr) < (int)$user_number - 1) {
-        $GLOBALS['isError'] = true;
+            $GLOBALS['isError'] = true;
             return array("服务器节点数据读取错误！请稍后刷新重试", "如果多次尝试后请联系作者涛之雨", "QQ：2333333333");
         } else {
             $arr2 = randLink(0, count($arr) - 1, (int)$user_number, $arr);
