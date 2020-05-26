@@ -5,13 +5,13 @@ $user_number=$_GET['n'];//10位数字，过期时间
 $user_exp= $_GET['e'];//过期时间，时间戳，十位数字，永久为十个9
 $user_key= $_GET['k'];//这里是固定值，防止被后台地址泄露
 $user_isShorten= $_GET['u'];//是否生成短连接
-$url="http://192.168.1.4:9999/v2.php";
+$url="links.php";//订阅的主php
 $shortenUrl="这里是短网址的api，我采用的是yourls";
 $My_key='这里是个人混淆参数（可以这样理解吧，需要把获取签名和订阅的两个地方的设置成相同参数）';
 if(!preg_match("/^[1-9]\\d{4,14}$/",$user_id)||
     !preg_match("/^\\d{9,10}$/",$user_exp)||
     !preg_match("/^\\d+$/",$user_number)||
-    $user_key!="1837"){
+    $user_key!="233333333"){
     //最后这个k防止被后台地址泄露
     echo "参数错误！";
     return;
@@ -27,7 +27,7 @@ echo $surl;
     echo $url . "?i=".  $user_id . "&n=" . $user_number . "&e=". $user_exp . "&s=" . getSign($user_id,$user_number,$user_exp,$user_sign,$My_key);
 }
 function getSign($user_id,$user_number,$user_exp,$user_sign,$My_key){
-    return substr (md5(md5(substr (md5($user_id.$user_number),0,5).$user_exp).$My_key),0,30);//算法随便改，只要获取签名和订阅的两个地方的设置成相同方法就成
+    return substr (md5(substr(md5 (md5($user_id.$user_number).$user_exp),0,5).$My_key),0,30);//算法随便改，只要获取签名和订阅的两个地方的设置成相同方法就成
 }
 
 function getShortenUrl($url, $args=null, $method="post", $withCookie = false, $timeout = CURL_TIMEOUT, $headers=array())
